@@ -8,8 +8,6 @@ class ViewPagerAdapter(
     fragmentActivity: FragmentActivity,
     private val fragments: ArrayList<Fragment>,
 ) : FragmentStateAdapter(fragmentActivity) {
-
     override fun getItemCount(): Int = fragments.size
-
     override fun createFragment(position: Int): Fragment = fragments[position]
 }
