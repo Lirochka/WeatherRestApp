@@ -1,62 +1,57 @@
 package com.example.weatherrestapp
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.weatherrestapp.databinding.ActivityMainBinding
-import com.example.weatherrestapp.network.RetrofitHelper
-import com.example.weatherrestapp.network.WeatherApi
+import com.example.weatherrestapp.viewmodel.MainViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textfield.TextInputLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
+    private lateinit var inputField: TextInputLayout
 
     private lateinit var binding: ActivityMainBinding
-
-    private val appId = "9db8931477a2b163a4930c8c20ebd7d1"
-
-    private val retrofitClient = RetrofitHelper.getInstance().create(WeatherApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        viewPager = binding.viewPager
+        tabLayout = binding.tabLayout
+        inputField = binding.mainInputField
 
-            val result = retrofitClient.getGeocoding("London", limit = "1", appId)
-
-            val latResult = result.body()?.first()?.lat ?: 0.0
-            val lonResult = result.body()?.first()?.lon ?: 0.0
-
-            val currentWeather =
-                retrofitClient.getCurrentWeather(latResult, lonResult, appId, "metric")
-            val forecast = retrofitClient.getForecast(latResult, lonResult, appId, "metric")
-
-            Log.d("testRetrofit", "geoCoding---> ${result.body()}")
-            Log.d("testRetrofit", "currentWeather---> ${currentWeather.body()}")
-            Log.d("testRetrofit", "forecast---> ${forecast.message()}")
-            Log.d("testRetrofit", "forecast---> ${forecast.isSuccessful()}")
-            Log.d("testRetrofit", "forecast---> ${forecast.body()}")
-
-            withContext(Dispatchers.Main) {
-            //        locationLabel.text = "Location $latResult $lonResult"
-            //        currentWeatherLabel.text = currentWeather.body()?.weather?.first()?.description ?: ""
-            //     forecastLabel.text = forecast.body()?.list?.first()?.weather?.first()?.description ?: ""
+        inputField.setEndIconOnClickListener {
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            if (inputMethodManager.isActive) {
+                inputMethodManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
+            }
+            lifecycleScope.launch(Dispatchers.Main) {
+                mainViewModel.getCoordinates(inputField.editText?.text.toString())
             }
         }
 
-        viewPager = binding.viewPager
-        tabLayout = binding.tabLayout
-
+        mainViewModel.coordinatesResult.observe(this, Observer {
+            lifecycleScope.launch(Dispatchers.Main) {
+                mainViewModel.getCurrentWeather(it.lat, it.lon)
+                mainViewModel.getForecast(it.lat, it.lon)
+            }
+        })
         prepareViewPager()
     }
     private fun prepareViewPager() {
@@ -64,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             WeatherFragment.newInstance(),
             ForecastFragment.newInstance()
         )
-
         val tabTitlesArray = arrayOf("Weather", "ForeCast")
 
         viewPager.adapter = ViewPagerAdapter(this, fragmentList)
