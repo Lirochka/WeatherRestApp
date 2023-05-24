@@ -13,7 +13,6 @@ import com.example.weatherrestapp.databinding.FragmentForecastBinding
 import com.example.weatherrestapp.model.forecast.ForecastResult
 import com.example.weatherrestapp.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 @AndroidEntryPoint
 class ForecastFragment : Fragment() {
 

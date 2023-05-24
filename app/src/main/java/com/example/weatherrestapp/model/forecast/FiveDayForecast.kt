@@ -1,6 +1,5 @@
 package com.example.weatherrestapp.model.forecast
 
-
 data class FiveDayForecast(
     val city: City,
     val cnt: Int,

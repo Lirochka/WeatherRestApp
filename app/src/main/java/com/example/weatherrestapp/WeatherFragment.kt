@@ -16,7 +16,6 @@ import com.example.weatherrestapp.repository.WeatherRepositoryImpl.Companion.WEA
 import com.example.weatherrestapp.repository.WeatherRepositoryImpl.Companion.WEATHER_TYPE_THUNDERSTORM
 import com.example.weatherrestapp.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
 @AndroidEntryPoint
 class WeatherFragment : Fragment() {
 
@@ -89,7 +88,6 @@ class WeatherFragment : Fragment() {
             }
         )
     }
-
     companion object {
         fun newInstance() = WeatherFragment()
     }

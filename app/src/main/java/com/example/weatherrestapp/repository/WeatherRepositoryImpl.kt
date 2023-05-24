@@ -2,15 +2,13 @@ package com.example.weatherrestapp.repository
 
 import com.example.weatherrestapp.model.currentweather.WeatherResult
 import com.example.weatherrestapp.model.forecast.City
-import com.example.weatherrestapp.model.forecast.Coord
+import com.example.weatherrestapp.model.Coord
 import com.example.weatherrestapp.model.forecast.FiveDayForecast
 import com.example.weatherrestapp.network.WeatherApi
 import javax.inject.Inject
-
 class WeatherRepositoryImpl @Inject constructor(
     private val weatherApi: WeatherApi
 ) : WeatherRepository {
-
     override suspend fun getLocationCoordinates(city: String): Coord {
 
         val response = weatherApi.getGeocoding(city, LIMIT, APP_ID)
@@ -24,7 +22,6 @@ class WeatherRepositoryImpl @Inject constructor(
         }
         return Coord(0.0, 0.0)
     }
-
     override suspend fun getCurrentWeather(lat: Double, lon: Double): WeatherResult {
         val response = weatherApi.getCurrentWeather(lat, lon, APP_ID, METRIC)
         if (response.isSuccessful) {
@@ -48,7 +45,6 @@ class WeatherRepositoryImpl @Inject constructor(
 
         )
     }
-
     override suspend fun getForecast(lat: Double, lon: Double): FiveDayForecast {
         val response = weatherApi.getForecast(lat, lon, APP_ID, METRIC)
         if (response.isSuccessful) {
@@ -69,7 +65,6 @@ class WeatherRepositoryImpl @Inject constructor(
             message = 0
         )
     }
-
     companion object {
         const val LIMIT = "1"
         const val APP_ID = "9db8931477a2b163a4930c8c20ebd7d1"

@@ -1,5 +1,4 @@
-package com.example.weatherrestapp.model.forecast
-
+package com.example.weatherrestapp.model
 data class Main(
     val feels_like: Double,
     val grnd_level: Int,

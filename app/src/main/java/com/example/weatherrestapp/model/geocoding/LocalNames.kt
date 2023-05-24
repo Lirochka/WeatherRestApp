@@ -1,5 +1,4 @@
 package com.example.weatherrestapp.model.geocoding
-
 data class LocalNames(
     val ar: String,
     val be: String,

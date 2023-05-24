@@ -1,5 +1,4 @@
 package com.example.weatherrestapp.model.currentweather
-
 data class WeatherResult(
     val main: String,
     val description: String,

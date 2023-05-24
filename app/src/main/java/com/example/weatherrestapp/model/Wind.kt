@@ -1,5 +1,4 @@
-package com.example.weatherrestapp.model.currentweather
-
+package com.example.weatherrestapp.model
 data class Wind(
     val deg: Int,
     val gust: Double,

@@ -1,5 +1,6 @@
 package com.example.weatherrestapp.model.forecast
 
+import com.example.weatherrestapp.model.Coord
 data class City(
     val coord: Coord,
     val country: String,

@@ -1,5 +1,4 @@
 package com.example.weatherrestapp.model.currentweather
-
 data class Sys(
     val country: String,
     val id: Int,
